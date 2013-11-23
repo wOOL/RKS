@@ -34,9 +34,9 @@ toc
 % random kitchen sinks
 tic
 W = sigma^-1*randn(numBases,D);
-trainX_proj = exp(sqrt(-1)*W*trainX);
-w_hat = symmlq(@(v)(numBases*lambda*v(:) + trainX_proj*(trainX_proj'*v(:))),trainX_proj*trainY(:),1e-6,2000);
-testX_proj = exp(sqrt(-1)*W*testX);
+trainX_proj = numBases^-0.5*exp(sqrt(-1)*W*trainX);
+w_hat = symmlq(@(v)(lambda*v(:) + trainX_proj*(trainX_proj'*v(:))),trainX_proj*trainY(:),1e-6,2000);
+testX_proj = numBases^-0.5*exp(sqrt(-1)*W*testX);
 y_hat = real(w_hat'*testX_proj);
 fprintf('Kernel Regression (Ramdom Kitchen Sinks + RBF + L2) MSE: %f \n', mean((testY-y_hat).^2));
 toc
@@ -44,7 +44,7 @@ toc
 figure;
 %colormap(gray);
 subplot(2,2,1);
-approxK = real(trainX_proj'*trainX_proj)/numBases;
+approxK = real(trainX_proj'*trainX_proj);
 imagesc(approxK);
 title('Approx. K');
 colorbar;
